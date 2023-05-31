@@ -1,6 +1,8 @@
 package de.neuefische.shopsystem.repository;
 
+import de.neuefische.shopsystem.exception.OrderNotFoundException;
 import de.neuefische.shopsystem.exception.ProductNotFoundException;
+import de.neuefische.shopsystem.model.Order;
 import de.neuefische.shopsystem.model.Product;
 import org.springframework.stereotype.Repository;
 
@@ -53,4 +55,5 @@ public class ProductRepository {
     private void addInitialProducts() {
         this.products.addAll(List.of(new Product("Product-1", "Georgischer Rotwein"), new Product("Product-2", "Franz. Chardonnay"), new Product("Product-3", "Adiletten"), new Product("Product-4", "Bademantel"), new Product("Product-5", "Apple Keyboard")));
     }
+
 }
