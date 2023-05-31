@@ -1,11 +1,13 @@
 package de.neuefische.shopsystem.service;
 
+import de.neuefische.shopsystem.exception.OrderNotFoundException;
 import de.neuefische.shopsystem.exception.ProductNotFoundException;
 import de.neuefische.shopsystem.model.Order;
 import de.neuefische.shopsystem.model.Product;
 import org.junit.jupiter.api.Test;
 import de.neuefische.shopsystem.repository.OrderRepository;
 import de.neuefische.shopsystem.repository.ProductRepository;
+import org.mockito.internal.matchers.Or;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,41 +59,64 @@ class ShopServiceTest {
         List<Product> actualProductList=shopService.listProducts();
 
         //THEN
-        assertEquals(expectedProductList,actualProductList);
         verify(productRepository).list();
+        assertEquals(expectedProductList,actualProductList);
     }
 
     @Test
     void listOrders_whenNoOrdersExist_thenReturnEmptyList() {
         //GIVEN
+        List<Order> expectedOrderList= new ArrayList<Order>();
+        when(orderRepository.list()).thenReturn(expectedOrderList);
 
         //WHEN
-
+        List<Order> actualOrderList= shopService.listOrders();
         //THEN
+        verify(orderRepository).list();
+        assertEquals(expectedOrderList,actualOrderList);
     }
 
     @Test
     void getOrderById_whenValidOrderId_thenReturnOrder() {
         //GIVEN
+        String orderId="01";
+        Order expectedOrder= new Order(orderId, new ArrayList<Product>());
+        when(orderRepository.getOrderById(orderId)).thenReturn(expectedOrder);
 
         //WHEN
+        Order actualOrder= orderRepository.getOrderById(orderId);
 
         //THEN
+        verify(orderRepository).getOrderById(any());
+        assertEquals(expectedOrder, actualOrder);
     }
 
     @Test
     void addOrder_whenOrderWasPlacedSuccessfully_thenOrdersListLengthShouldBeIncremented() {
         //GIVEN
-
+        String orderId="02";
+        Product expectedProduct= new Product(orderId, "Rotwein");
+        List<Product> expectedProducts= new ArrayList<>();
+        expectedProducts.add(expectedProduct);
+        Order expectedOrder= new Order(orderId, expectedProducts);
         //WHEN
-
+        shopService.addOrder(expectedOrder);
         //THEN
+        verify(orderRepository).addOrder(expectedOrder);
     }
 
     // BONUS
     @Test
     void getProductById_whenNonExistingId_thenThrowProductNotFoundException() {
         //GIVEN
+        when(productRepository.getProductById("1")).thenThrow(new ProductNotFoundException(""));
+
+        assertThrows(
+                ProductNotFoundException.class,()->{
+                    shopService.getProductById("1");
+                }
+        );
+        verify(productRepository).getProductById(any());
 
         //WHEN + THEN
     }
@@ -100,8 +125,15 @@ class ShopServiceTest {
     @Test
     void getOrderById_whenNonExistingId_thenThrowOrderNotFoundException() {
         //GIVEN
+        when(orderRepository.getOrderById("1")).thenThrow(new OrderNotFoundException(""));
 
         //WHEN + THEN
+        assertThrows(
+                OrderNotFoundException.class,() ->{
+                    shopService.getOrderById("1");
+                }
+        );
+        verify(orderRepository).getOrderById(any());
     }
 
 }
