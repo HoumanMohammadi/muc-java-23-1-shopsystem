@@ -47,10 +47,18 @@ class ShopServiceTest {
     @Test
     void listProducts_whenAtLeastOneProductExists_thenReturnProductList() {
         //GIVEN
+        String expectedProductId = "1";
+        Product product = new Product(expectedProductId, "Rotwein");
+        List<Product> expectedProductList= new ArrayList<Product>();
+        expectedProductList.add(product);
+        when(productRepository.list()).thenReturn(expectedProductList);
 
         //WHEN
+        List<Product> actualProductList=shopService.listProducts();
 
         //THEN
+        assertEquals(expectedProductList,actualProductList);
+        verify(productRepository).list();
     }
 
     @Test
