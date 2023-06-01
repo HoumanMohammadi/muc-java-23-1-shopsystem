@@ -17,14 +17,14 @@ public class OrderRepository {
         orders = new ArrayList<>();
 
         // Zur besseren Testbarkeit mit dem Controller, habe ich hier initiale Bestellungen eingefügt
-        addInitialOrders();
+     //   addInitialOrders();
     }
 
     public OrderRepository(List<Order> orders) {
         this.orders = orders;
 
         // Zur besseren Testbarkeit mit dem Controller, habe ich hier initiale Bestellungen eingefügt
-        addInitialOrders();
+       // addInitialOrders();
     }
 
     public List<Order> list() {
